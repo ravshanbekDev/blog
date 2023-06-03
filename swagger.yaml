@@ -1,0 +1,199 @@
+openapi: 3.0.0
+info:
+  title: My Blog API
+  version: 1.0.0
+  description: API documentation for My Blog application
+servers:
+  - url: http://localhost:3000
+paths:
+  /auth/login:
+    post:
+      summary: Logs in a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Invalid credentials
+  /auth/register:
+    post:
+      summary: Registers a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+  /blogs:
+    get:
+      summary: Get all blogs
+      responses:
+        '200':
+          description: Successful response
+    post:
+      summary: Create a new blog
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogInput'
+      responses:
+        '200':
+          description: Successful response
+  /blogs/{id}:
+    get:
+      summary: Get a blog by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Blog not found
+    put:
+      summary: Update a blog
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: body
+          in: body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogInput'
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Blog not found
+    delete:
+      summary: Delete a blog
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Blog not found
+  /blogs/{id}/like:
+    post:
+      summary: Like a blog
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Blog not found
+  /blogs/{blogId}/comments:
+    post:
+      summary: Add a comment to a blog
+      parameters:
+        - name: blogId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: body
+          in: body
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentInput'
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Blog not found
+    get:
+      summary: Get comments for a blog
+      parameters:
+        - name: blogId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Blog not found
+
+components:
+  schemas:
+    BlogInput:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Blog title
+        description:
+          type: string
+          description: Blog description
+        image:
+          type: string
+          description: Blog image URL
+      example:
+        title: Sample Blog
+        description: This is a sample blog
+        image: https://example.com/sample-image.jpg
+    CommentInput:
+      type: object
+      properties:
+        comment:
+          type: string
+          description: Comment content
+      example:
+        comment: This is a comment

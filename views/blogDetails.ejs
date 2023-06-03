@@ -1,0 +1,16 @@
+<!-- blogDetails.ejs -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= blog.title %></title>
+</head>
+<body>
+  <h2><%= blog.title %></h2>
+  <p><%= blog.description %></p>
+  <img src="<%= blog.image %>" alt="Blog Image">
+  <p>Likes: <%= blog.likes %></p>
+  <p>Views: <%= blog.views %></p>
+  <a href="/blogs/<%= blog.id %>/like">Like</a>
+  <a href="/blogs/<%= blog.id %>/approve">Approve</a>
+</body>
+</html>

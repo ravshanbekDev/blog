@@ -1,0 +1,51 @@
+<!-- blog.ejs -->
+<body>
+  <h2><%= blog.title %></h2>
+  <p><%= blog.description %></p>
+  <img src="<%= blog.image %>" alt="Blog Image">
+  <p>Likes: <%= blog.likes %></p>
+  <p>Views: <%= blog.views %></p>
+  <a href="/blogs/<%= blog.id %>/like">Like</a>
+  <a href="/blogs/<%= blog.id %>/approve">Approve</a>
+
+  <h3>Comments</h3>
+  <ul id="comments-list">
+    <% blog.comments.forEach(function(comment) { %>
+      <li><%= comment %></li>
+    <% }) %>
+  </ul>
+
+  <form id="add-comment-form">
+    <input type="text" id="comment-input" placeholder="Add a comment">
+    <button type="submit">Add Comment</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    // Receive new comment event
+    socket.on('newComment', (data) => {
+      const { blogId, comment } = data;
+      if (blogId === '<%= blog.id %>') {
+        const commentList = document.getElementById('comments-list');
+        const li = document.createElement('li');
+        li.innerText = comment;
+        commentList.appendChild(li);
+      }
+    });
+
+    // Add comment form submission
+    const addCommentForm = document.getElementById('add-comment-form');
+    const commentInput = document.getElementById('comment-input');
+    addCommentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const comment = commentInput.value.trim();
+      if (comment !== '') {
+        // Emit addComment event
+        socket.emit('addComment', { blogId: '<%= blog.id %>', comment });
+        commentInput.value = '';
+      }
+    });
+  </script>
+</body>
